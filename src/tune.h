@@ -1,0 +1,40 @@
+#pragma once
+
+#ifdef TUNING
+    #include <string>
+    #include <vector>
+    struct TuneParam {
+        std::string name;
+        int *value;
+        int min, max, step;
+    };
+    inline std::vector<TuneParam> tuning_params;
+    #define TUNE_PARAM(name, val, min, max, step) \
+        inline int name = val; \
+        inline bool name##_registered = (tuning_params.push_back({#name, &name, min, max, step}), true);
+#else
+    #define TUNE_PARAM(name, val, min, max, step) \
+        inline int name = val;
+#endif
+
+TUNE_PARAM(LMR_BASE,        175,  100, 300, 10)
+TUNE_PARAM(LMR_MIN_DEPTH,     3,    2,   5,  1)
+TUNE_PARAM(LMR_MIN_MOVES,     3,    2,   6,  1)
+TUNE_PARAM(RFP_MARGIN,       64,   30, 120, 10)
+TUNE_PARAM(RFP_IMPROVING,    71,   30, 120, 10)
+TUNE_PARAM(RFP_MAX_DEPTH,     6,    4,   9,  1)
+TUNE_PARAM(RAZOR_MARGIN,    129,   60, 250, 15)
+TUNE_PARAM(RAZOR_MAX_DEPTH,   3,    2,   5,  1)
+TUNE_PARAM(NMP_BASE_R,        5,    3,   7,  1)
+TUNE_PARAM(NMP_DEPTH_DIV,     5,    3,   8,  1)
+TUNE_PARAM(NMP_EVAL_DIV,    214,  100, 400, 20)
+TUNE_PARAM(NMP_MIN_DEPTH,     3,    2,   5,  1)
+TUNE_PARAM(SE_BETA_MULT,      3,    1,   6,  1)
+TUNE_PARAM(SE_MIN_DEPTH,      8,    5,  12,  1)
+TUNE_PARAM(SE_TT_DEPTH,       3,    1,   5,  1)
+TUNE_PARAM(SEE_QUIET_MULT,   92,   40, 180, 10)
+TUNE_PARAM(SEE_CAPT_MULT,    93,   40, 180, 10)
+TUNE_PARAM(SEE_QUIET_DEPTH,   6,    3,   9,  1)
+TUNE_PARAM(SEE_CAPT_DEPTH,    7,    3,   9,  1)
+TUNE_PARAM(LMP_MAX_DEPTH,     5,    3,   8,  1)
+TUNE_PARAM(LMP_BASE,          4,    2,   8,  1)
