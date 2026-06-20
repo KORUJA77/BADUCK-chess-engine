@@ -1,0 +1,7 @@
+*.exe
+*.o
+*.d
+.tmp/
+build/
+*.nnue
+*.bak

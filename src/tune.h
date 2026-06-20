@@ -1,5 +1,8 @@
 #pragma once
 
+// ============================================================
+// BADUCK SPSA Tuning Parameters
+// ============================================================
 #ifdef TUNING
     #include <string>
     #include <vector>
@@ -12,8 +15,13 @@
     #define TUNE_PARAM(name, val, min, max, step) \
         inline int name = val; \
         inline bool name##_registered = (tuning_params.push_back({#name, &name, min, max, step}), true);
+    #define MODULE_WEIGHT(name, val) \
+        inline int name = val; \
+        inline bool name##_registered = (tuning_params.push_back({#name, &name, 0, 100, 5}), true);
 #else
     #define TUNE_PARAM(name, val, min, max, step) \
+        inline int name = val;
+    #define MODULE_WEIGHT(name, val) \
         inline int name = val;
 #endif
 
@@ -38,3 +46,8 @@ TUNE_PARAM(SEE_QUIET_DEPTH,   6,    3,   9,  1)
 TUNE_PARAM(SEE_CAPT_DEPTH,    7,    3,   9,  1)
 TUNE_PARAM(LMP_MAX_DEPTH,     5,    3,   8,  1)
 TUNE_PARAM(LMP_BASE,          4,    2,   8,  1)
+
+MODULE_WEIGHT(OCB_SCALE_WEIGHT, 50)
+TUNE_PARAM(OCB_MAX_PAWNS_RELEVANT, 5, 2, 10, 1)
+TUNE_PARAM(OCB_MAX_DIVISOR, 3, 2, 5, 1)
+MODULE_WEIGHT(FORTRESS_DETECT_WEIGHT, 50)
