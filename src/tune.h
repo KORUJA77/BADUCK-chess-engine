@@ -51,3 +51,22 @@ MODULE_WEIGHT(OCB_SCALE_WEIGHT, 50)
 TUNE_PARAM(OCB_MAX_PAWNS_RELEVANT, 5, 2, 10, 1)
 TUNE_PARAM(OCB_MAX_DIVISOR, 3, 2, 5, 1)
 MODULE_WEIGHT(FORTRESS_DETECT_WEIGHT, 50)
+
+// ============================================================
+// MODULO 1.2 - Gestao de Tempo Dinamica (BADUCK Time Control)
+// ============================================================
+// Baseado em node-fraction (ideia Koivisto) + score-drop +
+// best-move-instability ja presentes no Smallbrain. Aqui apenas
+// expomos as constantes para tuning via SPSA.
+TUNE_PARAM(TM_NODE_FRACTION_BASE,   110,   95, 130,  5)
+TUNE_PARAM(TM_NODE_FRACTION_CAP,     90,   60, 100,  5)
+TUNE_PARAM(TM_NODE_MIN_DEPTH,        10,    6,  14,  1)
+TUNE_PARAM(TM_SCORE_RISING_MARGIN,   30,   10,  60,  5)
+TUNE_PARAM(TM_EXTEND_PCT,           110,  100, 130,  5)
+TUNE_PARAM(TM_SCORE_DROP_FLOOR,    -200, -400, -50, 25)
+TUNE_PARAM(TM_SCORE_DROP_MARGIN,    -20,  -60,  -5,  5)
+TUNE_PARAM(TM_INSTABILITY_LIMIT,      4,    2,   8,  1)
+TUNE_PARAM(TM_INSTABILITY_PCT,       75,   50,  90,  5)
+TUNE_PARAM(TM_HARDCAP_MIN_DEPTH,     10,    6,  14,  1)
+TUNE_PARAM(TM_HARDCAP_NUM,           10,    8,  12,  1)
+TUNE_PARAM(TM_HARDCAP_DEN,            6,    4,   8,  1)

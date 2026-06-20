@@ -34,3 +34,20 @@ Criterio de decisao:
 ---
 
 ## Template para novos modulos
+
+---
+
+## Modulo 1.2 - Gestao de Tempo Dinamica (BADUCK Time Control)
+- Status: Mantido (estrutural - parametrizacao de mecanismo ja existente)
+- Arquivos: tune.h, search.cpp
+- Abordagem: o Smallbrain ja possuia node-fraction (estilo Koivisto) +
+  score-drop detection + best-move-instability. Decisao tecnica: nao
+  reescrever do zero com "annealing simulado" (sem precedente validado
+  na literatura), e sim parametrizar via TUNE_PARAM o mecanismo
+  existente e comprovado, mantendo identidade BADUCK no naming.
+- Validacao funcional: go wtime 10000 btime 10000 winc 100 binc 100
+  na posicao inicial - aprofundou ate depth 17 com tempo gerenciado
+  de forma coerente e parada natural.
+- Proximo passo: SPSA tuning dos parametros TM_* via torneio.
+- Resultado do torneio: (pendente)
+- Decisao: (pendente)

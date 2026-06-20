@@ -696,20 +696,20 @@ SearchResult Search::iterativeDeepening() {
             int effort =
                 (node_effort[from(search_result.bestmove)][to(search_result.bestmove)] * 100) /
                 nodes;
-            if (depth > 10 && limit.time.optimum * (110 - std::min(effort, 90)) / 100 < now) break;
+            if (depth > TM_NODE_MIN_DEPTH && limit.time.optimum * (TM_NODE_FRACTION_BASE - std::min(effort, TM_NODE_FRACTION_CAP)) / 100 < now) break;
 
             // increase optimum time if score is increasing
-            if (search_result.score + 30 < eval_average / depth) limit.time.optimum *= 1.10;
+            if (search_result.score + TM_SCORE_RISING_MARGIN < eval_average / depth) limit.time.optimum = limit.time.optimum * TM_EXTEND_PCT / 100;
 
             // increase optimum time if score is dropping
-            if (search_result.score > -200 && search_result.score - previousResult < -20)
-                limit.time.optimum *= 1.10;
+            if (search_result.score > TM_SCORE_DROP_FLOOR && search_result.score - previousResult < TM_SCORE_DROP_MARGIN)
+                limit.time.optimum = limit.time.optimum * TM_EXTEND_PCT / 100;
 
             // increase optimum time if bestmove fluctates
-            if (bestmove_changes > 4) limit.time.optimum = limit.time.maximum * 0.75;
+            if (bestmove_changes > TM_INSTABILITY_LIMIT) limit.time.optimum = limit.time.maximum * TM_INSTABILITY_PCT / 100;
 
             // stop if we have searched for more than 75% of our max time.
-            if (depth > 10 && now * 10 > limit.time.maximum * 6) break;
+            if (depth > TM_HARDCAP_MIN_DEPTH && now * TM_HARDCAP_NUM > limit.time.maximum * TM_HARDCAP_DEN) break;
         }
     }
 
