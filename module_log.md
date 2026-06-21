@@ -224,3 +224,40 @@ itens de maior custo (3-5).
 - NPS: sem regressao (1.423.000 - dentro da variacao normal)
 - Decisao: manter. OCB_SCALE_WEIGHT continua em 50 (default),
   pendente de torneio para validacao de Elo.
+
+---
+
+## Modulo 2.3/2.4 - REVERTIDO apos medicao de Elo (bissecao)
+
+- Status: REVERTIDO - OCB_SCALE_WEIGHT e FORTRESS_DETECT_WEIGHT
+  voltados para 0 (desligado por padrao)
+- Metodo de descoberta: torneio de 1000 jogos (BADUCK v0.7 vs
+  Smallbrain baseline, tc=2+0.02) mostrou Elo -11.1 +/- 12.9,
+  LOS 4.5% (95.5% confianca de regressao real). Bissecao via
+  binario com OCB/Fortress desligados (weight=0), mesmo codigo
+  em tudo mais, confirmou: Elo voltou a +2.1 +/- 17.9 (neutro/
+  levemente positivo) em 500 jogos.
+- Analise por cor (achado adicional): o scaling nao era neutro
+  entre cores. Com OCB ligado: brancas 76.3% win rate, pretas
+  22.8%. Sem OCB: brancas 71.6%, pretas 35.4%. O modulo estava
+  reduzindo desproporcionalmente a vantagem percebida quando
+  pretas tinha chance real de jogo, enquanto ajudava brancas a
+  defender posicoes ocasionalmente piores. Efeito assimetrico
+  nao intencional - a hipotese original (scaling neutro por
+  estrutura, independente de cor) nao se confirmou na pratica.
+- Aprendizado metodologico: validacao funcional (eval converge
+  para 0 em posicao OCB isolada) NAO e suficiente para aprovar
+  um modulo. Confirma a necessidade do ciclo completo: implementar
+  -> validar funcionalmente -> medir Elo via torneio -> decidir.
+  Pulamos a etapa de medicao de Elo antes (Modulo 2.3 original e
+  formula corrigida v2), validamos so funcionalmente, e isso
+  mascarou uma regressao real por varios commits.
+- Codigo: PERMANECE no projeto (eval_scale.h intacto), apenas
+  desligado via MODULE_WEIGHT=0. Pode ser re-testado no futuro
+  com calibracao diferente (ex: scaling menor, ou so aplicado
+  quando o lado com vantagem e quem tem o OCB "bom", nao
+  simetrico para os dois lados).
+- NPS: 1.413.000 (estavel, sem impacto - confirma que o problema
+  era de avaliacao, nao de performance).
+- Decisao final: MANTER DESLIGADO ate proxima iteracao de
+  calibracao + novo ciclo de medicao.
