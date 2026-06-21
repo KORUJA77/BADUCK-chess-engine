@@ -1,6 +1,7 @@
 #include <algorithm>  // clamp
 #include "evaluation.h"
 #include "eval_scale.h"
+#include "draw_bias.h"
 #include "nnue.h"
 
 namespace eval {
@@ -12,6 +13,7 @@ Score evaluate(Board &board) {
                              (int32_t)(VALUE_MATE_IN_PLY - 1));
 
     score = eval_scale::applyEndgameScaling(board, score);
+    score = draw_bias::applyBlackDrawBias(board, score);
 
     return score;
 }

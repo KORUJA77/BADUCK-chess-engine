@@ -17,7 +17,7 @@
         inline bool name##_registered = (tuning_params.push_back({#name, &name, min, max, step}), true);
     #define MODULE_WEIGHT(name, val) \
         inline int name = val; \
-        inline bool name##_registered = (tuning_params.push_back({#name, &name, 0, 100, 5}), true);
+        inline bool name##_registered = (tuning_params.push_back({#name, &name, 0, 100, 20}), true);
 #else
     #define TUNE_PARAM(name, val, min, max, step) \
         inline int name = val;
@@ -70,3 +70,10 @@ TUNE_PARAM(TM_INSTABILITY_PCT,       75,   50,  90,  5)
 TUNE_PARAM(TM_HARDCAP_MIN_DEPTH,     10,    6,  14,  1)
 TUNE_PARAM(TM_HARDCAP_NUM,           10,    8,  12,  1)
 TUNE_PARAM(TM_HARDCAP_DEN,            6,    4,   8,  1)
+
+// ============================================================
+// MODULO 2.5 - Draw Bias Condicional (Pretas) - EXPERIMENTAL
+// ============================================================
+// Status: nao validado. Default = 0 (desligado).
+MODULE_WEIGHT(BLACK_DRAW_BIAS_WEIGHT, 0)
+TUNE_PARAM(BLACK_DRAW_BIAS_THRESHOLD, -50, -200, 0, 25)

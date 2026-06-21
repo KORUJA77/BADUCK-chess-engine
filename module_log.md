@@ -122,3 +122,26 @@ itens de maior custo (3-5).
 
 - **Resultado:** (pendente)
 - **Decisao:** (pendente)
+
+---
+
+## Modulo 2.5 - Draw Bias Condicional (Pretas)
+
+- Status: EXPERIMENTAL - implementado, DESLIGADO por padrao (weight=0)
+- Arquivos: draw_bias.h, tune.h, evaluation.cpp
+- Hipotese a validar: jogando de pretas, abaixo de um threshold de
+  desvantagem (BLACK_DRAW_BIAS_THRESHOLD), reduzir a magnitude do
+  score pode favorecer linhas mais solidas e reduzir taxa de derrota,
+  sem reduzir proporcionalmente mais a taxa de vitoria.
+- Design tecnico: aplicado SOMENTE no valor de retorno do eval, nunca
+  na comparacao interna do alpha-beta (preserva corretude da poda).
+- Origem do experimento: torneio de 40 partidas (commit 836d89f)
+  mostrou BADUCK 5-0-15 de brancas vs 1-6-13 de pretas contra
+  Smallbrain baseline. Amostra pequena demais para confirmar padrao
+  real vs ruido estatistico.
+- Pre-requisito antes de ligar o weight: rodar 300-500 partidas SEM
+  draw bias (weight=0) para confirmar se o desequilibrio de cor
+  persiste em amostra maior. So entao faz sentido testar weight > 0.
+- NPS: sem impacto (1.451.000, identico ao Modulo 1.2)
+- Resultado do torneio: (pendente - aguardando amostra maior primeiro)
+- Decisao: (pendente)
