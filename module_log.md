@@ -145,3 +145,24 @@ itens de maior custo (3-5).
 - NPS: sem impacto (1.451.000, identico ao Modulo 1.2)
 - Resultado do torneio: (pendente - aguardando amostra maior primeiro)
 - Decisao: (pendente)
+
+---
+
+## Modulo 1.3 - PGO (Profile-Guided Optimization)
+
+- Status: Mantido (otimizacao de build, sem mudanca de logica)
+- Arquivos: Makefile (removida duplicacao de target pgo, usado o
+  target nativo do Smallbrain ja existente: PGO_GEN/PGO_USE/PGO_MERGE)
+- Processo: make pgo - compila instrumentado, roda bench para coletar
+  profile, recompila usando dados reais de execucao.
+- Resultado: NPS 1.451.000 -> 1.470.000 (+1.3%)
+- Observacao: ganho menor que a faixa teorica tipica (5-15%) citada
+  na literatura, provavelmente porque o codigo ja estava bem otimizado
+  pelas flags previas (-O3 -flto -march=native) e o bench interno e
+  carga de profiling relativamente simples/repetitiva.
+- Validacao funcional: go wtime/btime na posicao inicial, comportamento
+  identico aos testes anteriores (e2e4, scores consistentes).
+- Decisao: manter no pipeline de build. Possivel melhoria futura: usar
+  um conjunto de profiling mais diverso (multiplas posicoes de
+  abertura/meio-jogo/final) em vez de so o bench padrao, para PGO
+  capturar mais variedade de hot paths.
