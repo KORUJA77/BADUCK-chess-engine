@@ -166,3 +166,24 @@ itens de maior custo (3-5).
   um conjunto de profiling mais diverso (multiplas posicoes de
   abertura/meio-jogo/final) em vez de so o bench padrao, para PGO
   capturar mais variedade de hot paths.
+
+---
+
+## Modulo 2.6 - Tablebases Syzygy 3-4-5 pecas
+
+- Status: Mantido - integrado e validado funcionalmente
+- Origem: ja existia suporte no codigo (Fathom), faltava baixar os
+  arquivos de dados.
+- Fonte: Syzygy-Tablebase-Downloader (mirror Lichess), 290 arquivos
+  (145 .rtbw + 145 .rtbz), ~940MB, pasta syzygy_tb/all/
+- Validacao funcional: posicao KPK simples, tbhits crescendo
+  corretamente durante a busca (1 -> 3 -> 11 -> 16 conforme depth
+  aumenta), confirmando consultas reais a tablebase.
+- Arquivo auxiliar: start_baduck.sh - configura SyzygyPath
+  automaticamente ao iniciar o motor.
+- Impacto esperado: precisao absoluta (100%) em finais de ate 5
+  pecas, eliminando qualquer erro de avaliacao heuristica nessas
+  posicoes. Topo da hierarquia de confianca do Modulo 2.4
+  (EGTB > INR > Scale Factor).
+- Decisao: manter sempre ativo. Tablebases sao fonte de verdade,
+  nao um "experimento" a ser desligado.
