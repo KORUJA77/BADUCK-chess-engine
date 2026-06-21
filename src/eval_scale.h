@@ -1,8 +1,5 @@
 #pragma once
 
-// ============================================================
-// BADUCK - Modulo 2.3: Compressao de Finais Estaticos
-// ============================================================
 #include "board.h"
 #include "builtin.h"
 #include "tune.h"
@@ -11,6 +8,7 @@
 namespace eval_scale {
 
 constexpr Bitboard LIGHT_SQUARES = 0x55AA55AA55AA55AAULL;
+constexpr Bitboard FILE_A = 0x0101010101010101ULL;
 
 [[nodiscard]] constexpr bool isLightSquare(Square sq) {
     return (LIGHT_SQUARES >> sq) & 1ULL;
@@ -49,6 +47,48 @@ constexpr Bitboard LIGHT_SQUARES = 0x55AA55AA55AA55AAULL;
     return white_minors <= 1 && black_minors <= 1 && (white_minors + black_minors) <= 1;
 }
 
+[[nodiscard]] inline Bitboard frontSpanMask(Square sq, Color c) {
+    const int file = sq % 8;
+    const int rank = sq / 8;
+
+    Bitboard files = FILE_A << file;
+    if (file > 0) files |= FILE_A << (file - 1);
+    if (file < 7) files |= FILE_A << (file + 1);
+
+    if (c == WHITE) {
+        Bitboard ranks_ahead = ~0ULL << ((rank + 1) * 8);
+        return files & ranks_ahead;
+    } else {
+        Bitboard ranks_ahead = (1ULL << (rank * 8)) - 1ULL;
+        return files & ranks_ahead;
+    }
+}
+
+[[nodiscard]] inline int countPassedPawns(const Board &board, Color c) {
+    Bitboard our_pawns = board.pieces(PAWN, c);
+    Bitboard enemy_pawns = board.pieces(PAWN, ~c);
+
+    int count = 0;
+    while (our_pawns) {
+        Square sq = builtin::lsb(our_pawns);
+        our_pawns &= our_pawns - 1;
+
+        if ((frontSpanMask(sq, c) & enemy_pawns) == 0ULL) {
+            count++;
+        }
+    }
+    return count;
+}
+
+[[nodiscard]] inline int ocbScaleFactorPct(const Board &board) {
+    const int passed = countPassedPawns(board, WHITE) + countPassedPawns(board, BLACK);
+
+    int sf = 18 + 4 * passed;
+    if (sf > 64) sf = 64;
+
+    return (sf * 100) / 64;
+}
+
 [[nodiscard]] inline Score applyEndgameScaling(const Board &board, Score raw_score) {
     const int total_pawns = builtin::popcount(board.pieces(PAWN));
     if (total_pawns > OCB_MAX_PAWNS_RELEVANT &&
@@ -64,8 +104,9 @@ constexpr Bitboard LIGHT_SQUARES = 0x55AA55AA55AA55AAULL;
     }
 
     if (OCB_SCALE_WEIGHT > 0 && isOppositeColoredBishops(board) && isPureOcbEndgame(board)) {
-        const int divisor_num = 100 + (OCB_MAX_DIVISOR - 1) * OCB_SCALE_WEIGHT;
-        score = static_cast<Score>((static_cast<int64_t>(score) * 100) / divisor_num);
+        const int scale_pct = ocbScaleFactorPct(board);
+        const int effective_pct = 100 - ((100 - scale_pct) * OCB_SCALE_WEIGHT) / 100;
+        score = static_cast<Score>((static_cast<int64_t>(score) * effective_pct) / 100);
     }
 
     return score;

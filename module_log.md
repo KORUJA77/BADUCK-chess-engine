@@ -203,3 +203,24 @@ itens de maior custo (3-5).
 - Decisao: nenhuma acao necessaria. Item removido da fila de
   prioridade do Modulo 2.4. Proximo item ativo: #2 (formula OCB
   correta do Stockfish, substituindo nosso divisor fixo atual).
+
+---
+
+## Modulo 2.4 - Item 2 (Formula OCB correta) - IMPLEMENTADO
+
+- Status: Mantido - substitui o divisor fixo do Modulo 2.3 original
+- Arquivos: eval_scale.h (v2)
+- Mudanca: divisor fixo (OCB_MAX_DIVISOR) substituido pela formula
+  do Stockfish: sf = 18 + 4 * (numero de peoes passados), escala
+  0-64 reescalada para percentual 0-100.
+- Nova funcao: countPassedPawns() via bitboard frontSpanMask
+  (checa ausencia de peao inimigo na coluna + colunas adjacentes,
+  a frente do peao na direcao de promocao).
+- Validacao funcional: posicao OCB pura sem peoes (FEN
+  8/5k2/8/3b4/8/2K5/3B4/8) converge para score cp 0 a partir da
+  depth 5, mesmo comportamento correto do Modulo 2.3 original,
+  agora com formula tecnicamente mais precisa (considera numero
+  real de peoes passados em vez de divisor fixo).
+- NPS: sem regressao (1.423.000 - dentro da variacao normal)
+- Decisao: manter. OCB_SCALE_WEIGHT continua em 50 (default),
+  pendente de torneio para validacao de Elo.
