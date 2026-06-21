@@ -80,28 +80,44 @@ constexpr Bitboard FILE_A = 0x0101010101010101ULL;
     return count;
 }
 
-[[nodiscard]] inline int ocbScaleFactorPct(const Board &board) {
-    const int passed = countPassedPawns(board, WHITE) + countPassedPawns(board, BLACK);
+[[nodiscard]] inline int pawnDampeningPct(int total_pawns) {
+    if (total_pawns <= OCB_DAMPEN_START_PAWNS) return 100;
 
-    int sf = 18 + 4 * passed;
-    if (sf > 64) sf = 64;
+    int excess = total_pawns - OCB_DAMPEN_START_PAWNS;
+    int dampening = 100 - excess * OCB_DAMPEN_PER_PAWN;
 
-    return (sf * 100) / 64;
+    if (dampening < OCB_DAMPEN_FLOOR_PCT) dampening = OCB_DAMPEN_FLOOR_PCT;
+    return dampening;
 }
 
-[[nodiscard]] inline bool isRelevantEndgamePhase(const Board &board) {
+[[nodiscard]] inline int phaseDampeningPct(int total_pieces) {
+    if (total_pieces <= OCB_DAMPEN_START_PIECES) return 100;
+
+    int excess = total_pieces - OCB_DAMPEN_START_PIECES;
+    int dampening = 100 - excess * OCB_DAMPEN_PER_PIECE;
+
+    if (dampening < OCB_DAMPEN_FLOOR_PCT) dampening = OCB_DAMPEN_FLOOR_PCT;
+    return dampening;
+}
+
+[[nodiscard]] inline int ocbScaleFactorPct(const Board &board) {
+    const int passed = countPassedPawns(board, WHITE) + countPassedPawns(board, BLACK);
     const int total_pawns = builtin::popcount(board.pieces(PAWN));
     const int total_pieces = builtin::popcount(board.all());
 
-    if (total_pieces > OCB_MAX_TOTAL_PIECES) return false;
-    if (total_pawns > OCB_MAX_PAWNS_RELEVANT) return false;
+    int sf = 18 + 4 * passed;
+    if (sf > 64) sf = 64;
+    int base_pct = (sf * 100) / 64;
 
-    return true;
+    const int pawn_damp = pawnDampeningPct(total_pawns);
+    const int phase_damp = phaseDampeningPct(total_pieces);
+
+    int effective = 100 - ((100 - base_pct) * pawn_damp * phase_damp) / 10000;
+
+    return effective;
 }
 
 [[nodiscard]] inline Score applyEndgameScaling(const Board &board, Score raw_score) {
-    if (!isRelevantEndgamePhase(board)) return raw_score;
-
     Score score = raw_score;
 
     if (FORTRESS_DETECT_WEIGHT > 0 && isInsufficientMaterial(board)) {
