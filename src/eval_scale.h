@@ -89,12 +89,18 @@ constexpr Bitboard FILE_A = 0x0101010101010101ULL;
     return (sf * 100) / 64;
 }
 
-[[nodiscard]] inline Score applyEndgameScaling(const Board &board, Score raw_score) {
+[[nodiscard]] inline bool isRelevantEndgamePhase(const Board &board) {
     const int total_pawns = builtin::popcount(board.pieces(PAWN));
-    if (total_pawns > OCB_MAX_PAWNS_RELEVANT &&
-        builtin::popcount(board.all()) > 10) {
-        return raw_score;
-    }
+    const int total_pieces = builtin::popcount(board.all());
+
+    if (total_pieces > OCB_MAX_TOTAL_PIECES) return false;
+    if (total_pawns > OCB_MAX_PAWNS_RELEVANT) return false;
+
+    return true;
+}
+
+[[nodiscard]] inline Score applyEndgameScaling(const Board &board, Score raw_score) {
+    if (!isRelevantEndgamePhase(board)) return raw_score;
 
     Score score = raw_score;
 

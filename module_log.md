@@ -287,3 +287,33 @@ A partir de agora, todo modulo que mexer em poda/search deve
 reportar tanto NPS quanto EBF antes/depois, ALEM do resultado de
 Elo via torneio - os tres juntos, nunca um isolado como criterio
 de decisao.
+
+---
+
+## Modulo 2.3 v3 - Correcao do bug AND/OR no early-out
+
+- Status: CORRIGIDO - pronto para novo ciclo de medicao de Elo
+- Arquivos: eval_scale.h (v3), tune.h (+OCB_MAX_TOTAL_PIECES)
+- Causa raiz da regressao de -11 Elo (v0.7): early-out usava AND
+  entre "poucos peoes" e "poucas pecas totais". Posicoes com MUITOS
+  peoes mas POUCAS pecas totais (final de bispos com 6+ peoes, sem
+  outras pecas) escapavam do early-out e recebiam scaling agressivo
+  mesmo nao sendo o "final OCB classico" (que tem poucos peoes).
+- Correcao: isRelevantEndgamePhase() agora usa duas checagens
+  independentes (equivalente a OR) - qualquer uma sozinha ja
+  bloqueia o efeito: total_pieces > OCB_MAX_TOTAL_PIECES (10) OU
+  total_pawns > OCB_MAX_PAWNS_RELEVANT (5).
+- Validacao funcional (3 cenarios):
+  1. Final OCB puro sem peoes -> score cp 0 (scaling ativo, correto)
+  2. Meio-jogo com torres, 7 peoes -> score cp 107 (sem scaling,
+     bloqueado por isPureOcbEndgame, correto)
+  3. Final so de bispos com 12 peoes -> score cp 195 (sem scaling,
+     bloqueado por OCB_MAX_PAWNS_RELEVANT, correto - este e o
+     cenario que vazava no bug v2)
+- Proximo passo: torneio de 500-1000 jogos comparando v3 vs
+  baseline, mesma metodologia do teste que detectou a regressao
+  original, para confirmar que a correcao recupera Elo sem
+  reintroduzir o problema.
+- Resultado do torneio: (pendente - aguardando torneio atual
+  v0.8 terminar para nao competir por recursos de CPU)
+- Decisao: (pendente)
