@@ -5,3 +5,4 @@
 build/
 *.nnue
 *.bak
+syzygy_tb/
