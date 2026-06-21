@@ -261,3 +261,29 @@ itens de maior custo (3-5).
   era de avaliacao, nao de performance).
 - Decisao final: MANTER DESLIGADO ate proxima iteracao de
   calibracao + novo ciclo de medicao.
+
+---
+
+## Metodologia: Effective Branching Factor (EBF) como Diagnostico
+
+Adicionado ao processo de validacao a partir de hoje. Ferramenta:
+calc_ebf.sh - calcula EBF = nodes(d)/nodes(d-1) a partir da saida
+UCI de uma busca go.
+
+Papel do EBF no processo:
+- Ferramenta de DIAGNOSTICO de engenharia, nao metrica de decisao
+  final. Ajuda a entender estruturalmente por que um modulo afetou
+  profundidade/NPS, isolado de efeito de qualidade tatica.
+- Faixa de referencia saudavel: 1.4-1.8 (motores de elite).
+- ATENCAO: EBF baixo nao e garantia de qualidade - pode ser sintoma
+  de poda excessiva (corte de linhas relevantes). Mesma licao do
+  episodio OCB: metrica tecnica isolada pode enganar, so Elo medido
+  em torneio confirma se uma mudanca e genuinamente boa.
+
+Baseline atual (BADUCK v0.8, posicao inicial, depth 16):
+  EBF medio (depths estaveis): ~1.59-1.66
+
+A partir de agora, todo modulo que mexer em poda/search deve
+reportar tanto NPS quanto EBF antes/depois, ALEM do resultado de
+Elo via torneio - os tres juntos, nunca um isolado como criterio
+de decisao.
