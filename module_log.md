@@ -187,3 +187,19 @@ itens de maior custo (3-5).
   (EGTB > INR > Scale Factor).
 - Decisao: manter sempre ativo. Tablebases sao fonte de verdade,
   nao um "experimento" a ser desligado.
+
+---
+
+## Modulo 2.4 - Item 1 (NMP zugzwang-safe) - JA RESOLVIDO NA BASE
+
+- Status: Confirmado - protecao ja existia no Smallbrain original
+- Investigacao: search.cpp linha 341, condicao do NMP inclui
+  board.nonPawnMat(color) - retorna false se o lado a mover so tem
+  rei e peoes, desativando o NMP automaticamente nesses finais
+  (exatamente onde zugzwang mutuo e comum).
+- Implementacao (board.cpp:299): nonPawnMat = bitboard de
+  cavalo|bispo|torre|dama do lado. Padrao correto e equivalente ao
+  usado por Stockfish e outros motores fortes.
+- Decisao: nenhuma acao necessaria. Item removido da fila de
+  prioridade do Modulo 2.4. Proximo item ativo: #2 (formula OCB
+  correta do Stockfish, substituindo nosso divisor fixo atual).
