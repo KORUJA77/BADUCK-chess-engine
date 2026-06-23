@@ -9,6 +9,7 @@
 #include "perft.h"
 #include "str_utils.h"
 #include "thread.h"
+#include "tune.h"
 #include "tt.h"
 
 extern ThreadPool Threads;
@@ -31,6 +32,16 @@ Uci::Uci() {
     options.add(uci::Option{"SyzygyPath", "string", "", "", "", ""});
     options.add(uci::Option{"UCI_Chess960", "check", "false", "false", "", ""});
     options.add(uci::Option{"UCI_ShowWDL", "check", "false", "false", "", ""});
+
+#ifdef TUNING
+    for (auto &param : tuning_params) {
+        options.add(uci::Option{param.name, "spin",
+                                std::to_string(*param.value),
+                                std::to_string(*param.value),
+                                std::to_string(param.min),
+                                std::to_string(param.max)});
+    }
+#endif
 
     applyOptions();
 }
@@ -123,6 +134,12 @@ void Uci::applyOptions() {
     board_.chess960 = options.get<bool>("UCI_Chess960");
 
     TTable.allocateMB(options.get<int>("Hash"));
+
+#ifdef TUNING
+    for (auto &param : tuning_params) {
+        *param.value = options.get<int>(param.name);
+    }
+#endif
 }
 
 void Uci::isReady() { std::cout << "readyok" << std::endl; }
