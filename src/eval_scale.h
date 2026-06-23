@@ -80,41 +80,16 @@ constexpr Bitboard FILE_A = 0x0101010101010101ULL;
     return count;
 }
 
-[[nodiscard]] inline int pawnDampeningPct(int total_pawns) {
-    if (total_pawns <= OCB_DAMPEN_START_PAWNS) return 100;
-
-    int excess = total_pawns - OCB_DAMPEN_START_PAWNS;
-    int dampening = 100 - excess * OCB_DAMPEN_PER_PAWN;
-
-    if (dampening < OCB_DAMPEN_FLOOR_PCT) dampening = OCB_DAMPEN_FLOOR_PCT;
-    return dampening;
-}
-
-[[nodiscard]] inline int phaseDampeningPct(int total_pieces) {
-    if (total_pieces <= OCB_DAMPEN_START_PIECES) return 100;
-
-    int excess = total_pieces - OCB_DAMPEN_START_PIECES;
-    int dampening = 100 - excess * OCB_DAMPEN_PER_PIECE;
-
-    if (dampening < OCB_DAMPEN_FLOOR_PCT) dampening = OCB_DAMPEN_FLOOR_PCT;
-    return dampening;
-}
-
 [[nodiscard]] inline int ocbScaleFactorPct(const Board &board) {
-    const int passed = countPassedPawns(board, WHITE) + countPassedPawns(board, BLACK);
-    const int total_pawns = builtin::popcount(board.pieces(PAWN));
     const int total_pieces = builtin::popcount(board.all());
 
+    // Desativa scaling se h  pe as demais (n o   final puro)
+    if (total_pieces > OCB_MAX_TOTAL_PIECES) return 100;
+
+    const int passed = countPassedPawns(board, WHITE) + countPassedPawns(board, BLACK);
     int sf = 18 + 4 * passed;
     if (sf > 64) sf = 64;
-    int base_pct = (sf * 100) / 64;
-
-    const int pawn_damp = pawnDampeningPct(total_pawns);
-    const int phase_damp = phaseDampeningPct(total_pieces);
-
-    int effective = 100 - ((100 - base_pct) * pawn_damp * phase_damp) / 10000;
-
-    return effective;
+    return (sf * 100) / 64;
 }
 
 [[nodiscard]] inline Score applyEndgameScaling(const Board &board, Score raw_score) {
@@ -126,9 +101,15 @@ constexpr Bitboard FILE_A = 0x0101010101010101ULL;
     }
 
     if (OCB_SCALE_WEIGHT > 0 && isOppositeColoredBishops(board) && isPureOcbEndgame(board)) {
-        const int scale_pct = ocbScaleFactorPct(board);
-        const int effective_pct = 100 - ((100 - scale_pct) * OCB_SCALE_WEIGHT) / 100;
-        score = static_cast<Score>((static_cast<int64_t>(score) * effective_pct) / 100);
+        // OCB scaling aplicado apenas quando score favorece as Brancas (score > 0)
+        // Mantém agressividade das Brancas, freia superestimativa das Pretas
+        if (score > 0) {
+            // Brancas vencendo: sem scaling (deixa atacar)
+        } else {
+            const int scale_pct = ocbScaleFactorPct(board);
+            const int effective_pct = 100 - ((100 - scale_pct) * OCB_SCALE_WEIGHT) / 100;
+            score = static_cast<Score>((static_cast<int64_t>(score) * effective_pct) / 100);
+        }
     }
 
     return score;

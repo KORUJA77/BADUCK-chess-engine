@@ -52,6 +52,7 @@ TUNE_PARAM(OCB_MAX_PAWNS_RELEVANT, 5, 2, 10, 1)
 TUNE_PARAM(OCB_MAX_DIVISOR, 3, 2, 5, 1)
 MODULE_WEIGHT(FORTRESS_DETECT_WEIGHT, 0)
 
+
 // ============================================================
 // MODULO 1.2 - Gestao de Tempo Dinamica (BADUCK Time Control)
 // ============================================================
