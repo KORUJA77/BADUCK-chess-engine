@@ -87,9 +87,9 @@ constexpr Bitboard FILE_A = 0x0101010101010101ULL;
     if (total_pieces > OCB_MAX_TOTAL_PIECES) return 100;
 
     const int passed = countPassedPawns(board, WHITE) + countPassedPawns(board, BLACK);
-    int sf = 18 + 4 * passed;
-    if (sf > 64) sf = 64;
-    return (sf * 100) / 64;
+    int sf = OCB_PASSED_BASE + OCB_PASSED_MULT * passed;
+    if (sf > OCB_SF_CAP) sf = OCB_SF_CAP;
+    return (sf * 100) / OCB_SF_CAP;
 }
 
 [[nodiscard]] inline Score applyEndgameScaling(const Board &board, Score raw_score) {
