@@ -364,3 +364,27 @@ de decisao.
 - Logica v6: scaling por sinal do score (score < 0 = Pretas vencendo)
 - Resultado torneio v6 vs Smallbrain (771j): +11.3 Elo LOS 94.6%
 - Meta: recuperar Brancas para 58% sem regredir Pretas abaixo de 48%
+
+---
+
+## Revisao de Codigo - Adicoes (2026-06-23 sessao 2)
+
+### SEE (see.h) - bugs reais
+20. [BUG] Mistura PIECE_VALUES_CLASSICAL e PIECE_VALUES_TUNED no mesmo SEE
+21. [BUG] Promocoes nao tratadas no SEE (attacker=PAWN mas vira rainha)
+22. [BUG] En passant nao tratado no SEE (to_sq vazio, victim=NONETYPE)
+
+### NNUE (nnue.h)
+23. King buckets muito grosseiros (4 quadrantes) - requer retreino de rede
+24. Verificar se SCReLU esta implementado em nnue.cpp (header so mostra relu)
+25. FEATURE_SIZE como #define - trocar para constexpr
+
+### Evaluation (evaluation.cpp)
+26. 50-move scaling usa double desnecessariamente - trocar para inteiro
+27. Expor FIFTY_MOVE_SCALE como TUNE_PARAM
+28. Investigar impacto no DrawRatio (68%+) - contra-prova empirica
+29. Meta estrategica: Pretas nunca perdem - combinar com Draw Bias
+
+### Draw Bias (draw_bias.h)
+30. board.sideToMove() != BLACK cria assimetria na arvore
+31. Combinar Draw Bias + 50-move scaling suave = "escudo de empate" Pretas
