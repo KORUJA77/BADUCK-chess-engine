@@ -317,3 +317,50 @@ de decisao.
 - Resultado do torneio: (pendente - aguardando torneio atual
   v0.8 terminar para nao competir por recursos de CPU)
 - Decisao: (pendente)
+
+---
+
+## Sessao de Revisao de Codigo - 2026-06-23
+
+### Mudancas implementadas
+
+#### LMR History Bonus (implementado - baduck_lmr_v1.exe)
+- Substituido `rdepth -= id % 2` (codigo morto com 1 thread) por
+  soma de HH + continuation history dividido por 16384.
+- Logica: moves com boa historia recebem menos reducao (matematicamente
+  superior - correlacao direta com probabilidade de falhar).
+- Arquivo: search.cpp
+- Status: pendente torneio de validacao vs v0.9
+
+### Fila de melhorias identificadas
+
+#### Busca/Search
+1. Investigar pico EBF depth 13 (LMR_BASE ou NMP_BASE_R via SPSA)
+2. Corrigir ss->eval com bound check da TT (+2-4 Elo estimado)
+3. Corrigir SEE pruning assimetrico (SEE_QUIET_MULT/SEE_CAPT_MULT trocados)
+4. Multicut apos Singular Extensions
+5. TT flag store mais preciso (verificar best > original_alpha)
+6. Expor ASP_DELTA_INIT e ASP_DELTA_MIN_DEPTH para SPSA
+7. eval_average ignorar primeiras profundidades no TM
+8. TM score drop consecutivo (contador de drops)
+9. DTZ move verificar qualidade antes de jogar
+
+#### MovePicker (bugs reais)
+10. [BUG] Killers nao verificam validade na movelist (move ilegal possivel)
+11. [BUG] scoreMove acessa ss-2 sem verificar ply >= 2 (acesso invalido)
+12. Capturas SEE negativas mover para depois dos quiets
+
+#### OCB/Avaliacao
+13. Testar OCB_SCALE_WEIGHT_WIN (scaling leve Brancas para recuperar 58%)
+
+#### Modulos
+14. Modulo 3.1 - QSearch com xeques
+15. Modulo 2.5 - Draw Bias Pretas
+
+### OCB - Estado atual (v0.9)
+- OCB_SCALE_WEIGHT: 50 -> 41 (SPSA convergiu)
+- OCB_MAX_TOTAL_PIECES: 10 -> 8 (SPSA convergiu)
+- OCB_PASSED_BASE/MULT/SF_CAP: expostos, SPSA em andamento
+- Logica v6: scaling por sinal do score (score < 0 = Pretas vencendo)
+- Resultado torneio v6 vs Smallbrain (771j): +11.3 Elo LOS 94.6%
+- Meta: recuperar Brancas para 58% sem regredir Pretas abaixo de 48%
