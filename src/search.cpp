@@ -477,7 +477,9 @@ moves:
         if (depth >= 3 && !in_check && made_moves > 3 + 2 * pv_node) {
             int rdepth = reductions[depth][made_moves];
 
-            rdepth -= id % 2;
+            const int hh_score = history::get<HistoryType::HH>(move, NO_MOVE, *this);
+            const int ch_score = (ss->ply > 0) ? history::get<HistoryType::CONST>(move, (ss-1)->currentmove, *this) : 0;
+            rdepth -= (hh_score + ch_score) / 16384;
 
             rdepth += improving;
 
