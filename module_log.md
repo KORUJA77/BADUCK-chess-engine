@@ -388,3 +388,59 @@ de decisao.
 ### Draw Bias (draw_bias.h)
 30. board.sideToMove() != BLACK cria assimetria na arvore
 31. Combinar Draw Bias + 50-move scaling suave = "escudo de empate" Pretas
+
+---
+
+## Revisao de Codigo - TT e NNUE (2026-06-24)
+
+### TranspositionTable (tt.h / tt.cpp)
+T1. [BUG] allocateMB usa 1e6 em vez de 1024*1024 - TT 5% menor que solicitado
+T2. Aging ausente - sem campo gen, entradas antigas nunca descartadas por idade
+T3. hashfull amostra sempre primeiras 1000 entradas - enviesado, melhor distribuido
+
+### NNUE (nnue.cpp / nnue.h)
+N1. alignas(32) faltando em HIDDEN_WEIGHTS e OUTPUT_BIAS
+N2. Ponteiros contiguos em activate/deactivate/move (+NPS)
+N3. relu inline explicito: x > 0 ? x : 0
+N4. constexpr para FEATURE_SIZE, N_HIDDEN_SIZE, BUCKETS
+N5. Unificar activate/deactivate com parametro sign
+N6. __restrict nos ponteiros do acumulador
+N7. Verificar feof/ferror no init + simplificar carregamento
+
+---
+
+## Revisao de Codigo - board.cpp / timemanager / uci (2026-06-24)
+
+### board.h / board.cpp
+B1. Oportunidade: movePiece usar XOR para reduzir operacoes bitboard (6->2)
+B2. Oportunidade: updateHash muito longa - refatorar em subfuncoes
+B3. [BUG] half_move_clock_ nao incrementado em updateHash - verificar makeMove
+B4. [BUG] en passant sem validacao de bounds no setFen
+B5. Oportunidade: refreshNNUE usar memcpy em vez de loop
+B6. Oportunidade: setFen usar string com reserve em vez de stringstream
+B7. [BUG] plies_played_ underflow se fullmove=0 no FEN
+B8. [BUG] en passant square sem validacao de range
+B9. Oportunidade: isDrawn usar hasLegalMove() em vez de gerar movelist completa
+B10. Oportunidade: getFen usar string com reserve
+B11. Oportunidade: isRepetition cast size_t->int (UB teorico)
+B12. Oportunidade: isDrawn nao verifica KNNK
+B13. Oportunidade: unmakeNullMove restaurar hash do state em vez de recalcular
+B14. [HOTPATH] us(Color c) faz 6 lookups+5 ORs - manter occ_white_/occ_black_ separados
+B15. [BUG POTENCIAL] all() tem assert que recalcula us<>() em release - occupancy pode dessincronizar
+B16. Oportunidade: Board copy constructor e operator= duplicados - usar copy-and-swap
+B17. Oportunidade: state_history_ como vector heap - usar array estatico MAX_PLY
+B18. Oportunidade: kingSQ e kingSq duplicados - remover um
+
+### timemanager.cpp
+TM1. mtg=50 hardcoded - candidato a TUNE_PARAM
+TM2. overhead=10ms hardcoded - candidato a UCI option
+TM3. optimum=total/20 hardcoded - candidato a TUNE_PARAM
+TM4. maximum=2*optimum hardcoded - inconsistente com TM_HARDCAP_NUM/DEN
+TM5. Oportunidade: alocar mais tempo por fase do jogo (meio-jogo > abertura/final)
+
+### uci.cpp
+U1. NormalizeToPawnValue=131 hardcoded - desatualiza se rede mudar
+U2. modelWinRate usa coeficientes do Stockfish - WDL impreciso para BADUCK
+U3. position() faz refreshNNUE desnecessario - usar makeMove<true> incremental
+U4. [BUG] extractSquare sem validacao de bounds - UB com input malformado
+U5. [BUG] UCI_MAX_HASH_MB mistura 1024^2 com 1e6 - mesmo bug do allocateMB
