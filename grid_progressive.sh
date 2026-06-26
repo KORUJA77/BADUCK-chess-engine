@@ -100,8 +100,6 @@ run_phase() {
     local combo_num=0
     local total_combos=$(wc -l < "$COMBO_FILE")
 
-    for i in "${!PARAM_NAMES[@]}"; do
-    done
 
     while IFS= read -r combo; do
         combo_num=$((combo_num + 1))
