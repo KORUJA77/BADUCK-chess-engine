@@ -272,9 +272,12 @@ Result Board::isDrawn(bool in_check) const {
     assert(kingSQ(WHITE) != NO_SQ && kingSQ(BLACK) != NO_SQ);
 
     if (half_move_clock_ >= 100) {
-        Movelist movelist;
-        movegen::legalmoves<Movetype::ALL>(*this, movelist);
-        if (in_check && movelist.size == 0) return Result::LOST;
+        if (in_check) {
+            // Verifica se ha pelo menos um lance legal (evita gerar lista completa)
+            Movelist movelist;
+            movegen::legalmoves<Movetype::ALL>(*this, movelist);
+            if (movelist.size == 0) return Result::LOST;
+        }
         return Result::DRAWN;
     }
 
