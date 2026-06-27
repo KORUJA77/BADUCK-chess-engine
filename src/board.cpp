@@ -348,9 +348,7 @@ void Board::unmakeNullMove() {
 
     en_passant_square_ = restore.enpassant;
 
-    hash_key_ ^= zobrist::sideToMove();
-    if (en_passant_square_ != NO_SQ)
-        hash_key_ ^= zobrist::enpassant(squareFile(en_passant_square_));
+    hash_key_ = restore.hash;  // restaura direto em vez de recalcular
 
     castling_rights_ = restore.castling;
     half_move_clock_ = restore.half_moves;
