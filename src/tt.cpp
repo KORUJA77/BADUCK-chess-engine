@@ -33,8 +33,8 @@ uint32_t TranspositionTable::index(U64 key) const {
 void TranspositionTable::allocate(U64 size) { entries_.resize(size, TEntry()); }
 
 void TranspositionTable::allocateMB(U64 size_mb) {
-    U64 sizeB = size_mb * static_cast<int>(1e6);
-    sizeB = std::clamp(sizeB, U64(1), U64(MAXHASH_MiB * 1e6));
+    U64 sizeB = size_mb * 1024ULL * 1024ULL;
+    sizeB = std::clamp(sizeB, U64(1), U64(MAXHASH_MiB * 1024ULL * 1024ULL));
     U64 elements = sizeB / sizeof(TEntry);
     allocate(elements);
     std::cout << "hash set to " << sizeB / 1e6 << " MB" << std::endl;
@@ -44,8 +44,9 @@ void TranspositionTable::clear() { std::fill(entries_.begin(), entries_.end(), T
 
 int TranspositionTable::hashfull() const {
     int used = 0;
+    size_t step = entries_.size() / 1000;
     for (size_t i = 0; i < 1000; i++) {
-        used += entries_[i].flag != NONEBOUND;
+        used += entries_[i * step].flag != NONEBOUND;
     }
     return used;
 }

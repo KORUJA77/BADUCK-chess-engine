@@ -39,10 +39,21 @@ namespace see {
     Square from_sq = from(move);
     Square to_sq = to(move);
     auto attacker = board.at<PieceType>(from_sq);
-    auto victim = board.at<PieceType>(to_sq);
+
+    // En passant: victim eh peao capturado, nao a casa destino (vazia)
+    PieceType victim;
+    if (typeOf(move) == ENPASSANT) {
+        victim = PAWN;
+    } else {
+        victim = board.at<PieceType>(to_sq);
+    }
+
+    // Promocao: attacker vira a peca promovida
+    PieceType effective_attacker = (typeOf(move) == PROMOTION) ? promotionType(move) : attacker;
+
     int swap = PIECE_VALUES_CLASSICAL[victim] - threshold;
     if (swap < 0) return false;
-    swap -= PIECE_VALUES_CLASSICAL[attacker];
+    swap -= PIECE_VALUES_CLASSICAL[effective_attacker];
     if (swap >= 0) return true;
     Bitboard occ = (board.all() ^ (1ULL << from_sq)) | (1ULL << to_sq);
     Bitboard attackers = allAttackers(board, to_sq, occ) & occ;

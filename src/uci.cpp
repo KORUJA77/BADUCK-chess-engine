@@ -16,8 +16,7 @@ extern ThreadPool Threads;
 
 namespace uci {
 
-constexpr U64 UCI_MAX_HASH_MB =
-    static_cast<U64>(TranspositionTable::MAXHASH_MiB * (1024 * 1024) / (1e6));
+constexpr U64 UCI_MAX_HASH_MB = TranspositionTable::MAXHASH_MiB;
 
 uci::Options options;
 
@@ -217,9 +216,11 @@ void Uci::quit() {
 }
 
 Square extractSquare(std::string_view squareStr) {
+    if (squareStr.size() < 2) return NO_SQ;
     char letter = squareStr[0];
     int file = letter - 96;
     int rank = squareStr[1] - 48;
+    if (file < 1 || file > 8 || rank < 1 || rank > 8) return NO_SQ;
     int index = (rank - 1) * 8 + file - 1;
     return Square(index);
 }
