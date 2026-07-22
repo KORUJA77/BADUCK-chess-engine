@@ -212,6 +212,7 @@ Score Search::absearch(int depth, Score alpha, Score beta, Stack *ss) {
     assert(ss->ply < MAX_PLY);
 
     (ss + 1)->excluded_move = NO_MOVE;
+    const Score original_alpha = alpha;
 
     /********************
      * Selective depth
@@ -307,7 +308,7 @@ Score Search::absearch(int depth, Score alpha, Score beta, Stack *ss) {
     ss->eval = tt_hit ? tt_score : eval::evaluate(board);
 
     // improving boolean
-    improving = (ss - 2)->eval != VALUE_NONE && ss->eval > (ss - 2)->eval;
+    improving = ss->ply >= 2 && (ss - 2)->eval != VALUE_NONE && ss->eval > (ss - 2)->eval;
 
     if (root_node) goto moves;
 
@@ -575,7 +576,7 @@ moves:
 
     // Transposition table flag
     const Flag b =
-        best >= beta ? LOWERBOUND : (pv_node && bestmove != NO_MOVE ? EXACTBOUND : UPPERBOUND);
+        best >= beta ? LOWERBOUND : (pv_node && best > original_alpha ? EXACTBOUND : UPPERBOUND);
 
     if (!excluded_move && !Threads.stop.load(std::memory_order_relaxed))
         TTable.store(depth, scoreToTT(best, ss->ply), b, board.hash(), bestmove);
