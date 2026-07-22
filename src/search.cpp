@@ -12,6 +12,8 @@
 #include "uci.h"
 #include "tune.h"
 
+#define MULTICUT_ASYM 0
+
 extern ThreadPool Threads;
 
 // Initialize reduction table
@@ -420,15 +422,15 @@ moves:
         // clang-format off
         // Singular extensions
         if (!root_node
-            && depth >= 8
+            && depth >= (color == WHITE ? SE_MIN_DEPTH_WHITE : SE_MIN_DEPTH_BLACK)
             && tt_hit  // tt_score cannot be VALUE_NONE!
             && ttmove == move
             && !excluded_move
             && std::abs(tt_score) < 10000
             && tte->flag & LOWERBOUND
-            && tte->depth >= depth - SE_TT_DEPTH) {
+            && tte->depth >= depth - (color == WHITE ? SE_TT_DEPTH_WHITE : SE_TT_DEPTH_BLACK)) {
             // clang-format on
-            const Score singular_beta = tt_score - SE_BETA_MULT * depth;
+            const Score singular_beta = tt_score - (color == WHITE ? SE_BETA_MULT_WHITE : SE_BETA_MULT_BLACK) * depth;
             const int singular_depth = (depth - 1) / 2;
 
             ss->excluded_move = move;
