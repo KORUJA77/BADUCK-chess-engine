@@ -5,6 +5,7 @@ UCI chess engine derived from Smallbrain, focused on performance and asymmetric 
 ## Philosophy / Motivation
 
 This project is a sandbox for trying out new ideas — the kind that are discussed in forums, shared among friends, or even the "crazy" ones that might not be viable. The goal is to learn, experiment, and contribute back to the computer chess community, regardless of whether the ideas ultimately gain Elo or not. Every test is a lesson.
+The name BADUCK is a tribute to my son, who loves chess and used this nickname in his childhood gaming profile.
 
 ## Features
 - Based on [Smallbrain](https://github.com/Disservin/Smallbrain) (GPLv3)
