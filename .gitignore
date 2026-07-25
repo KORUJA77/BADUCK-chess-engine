@@ -1,8 +1,42 @@
+# Binários
 *.exe
 *.o
+*.a
 *.d
-.tmp/
-build/
-*.nnue
+
+# Resultados e logs
+*.pgn
+*.csv
+*.log
+*.txt
+*.epd
+*.patch
 *.bak
-syzygy_tb/
+
+# Scripts de análise (você pode versioná-los depois, se quiser)
+analyze_regions.sh
+grid_*.sh
+grid_vs_external.sh
+mirror_fen.py
+mirror_fen_valid.py
+validate_openings.sh
+classify_openings.sh
+classify_openings_v2.sh
+filter_openings_final.sh
+filter_openings_final (1).sh
+patch_board.py
+patch_board_v2.py
+patch_board_v3.py
+patch_board_v4.py
+build_final_pool.py
+filter_openings_diverse.py
+
+# Dados de tuning
+spsa_*.csv
+spsa_*.txt
+grid_*.csv
+
+# Outros
+*.gemini
+src/data/
+.cache
