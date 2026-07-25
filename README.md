@@ -16,7 +16,7 @@ This project is a sandbox for trying out new ideas — the kind that are discuss
 ## Strength
 Estimated Elo: ~2300–2500 (evolving)
 
-Latest test (200 games vs Smallbrain):
+Latest test (1000 games vs Smallbrain):
 - After black tuning: **54.25% (+29.6 Elo)**
 
 ## Compilation
