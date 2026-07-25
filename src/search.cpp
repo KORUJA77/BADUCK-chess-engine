@@ -12,7 +12,7 @@
 #include "uci.h"
 #include "tune.h"
 
-#define MULTICUT_ASYM 0
+#define MULTICUT_ASYM 1
 
 extern ThreadPool Threads;
 
