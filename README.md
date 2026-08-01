@@ -17,6 +17,7 @@ The name BADUCK is a tribute to my son, who loves chess and used this nickname i
 
 ## Strength
 Latest test (1000 games vs Smallbrain):
+- Leading/Trailing (120,-50,3) **( 51,9% | +13,0 Elo)**
 - After black tuning: **54.25% (+29.6 Elo)**
 
 ## Compilation
