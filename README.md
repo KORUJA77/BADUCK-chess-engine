@@ -15,8 +15,6 @@ The name BADUCK is a tribute to my son, who loves chess and used this nickname i
 - Reproducible testing methodology
 
 ## Strength
-Estimated Elo: ~2300–2500 (evolving)
-
 Latest test (1000 games vs Smallbrain):
 - After black tuning: **54.25% (+29.6 Elo)**
 
