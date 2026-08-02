@@ -7,7 +7,7 @@ UCI chess engine derived from Smallbrain, focused on performance and asymmetric 
 ## Philosophy / Motivation
 
 This project is a sandbox for trying out new ideas — the kind that are discussed in forums, shared among friends, or even the "crazy" ones that might not be viable. The goal is to learn, experiment, and contribute back to the computer chess community, regardless of whether the ideas ultimately gain Elo or not. Every test is a lesson.
-The name BADUCK is a tribute to my son, who loves chess and used this nickname in his childhood gaming profile.
+The name **BADUCK** is a tribute to my son, who loves chess and used this nickname in his childhood gaming profile.
 
 ## Features
 - Based on [Smallbrain](https://github.com/Disservin/Smallbrain) (GPLv3)
@@ -22,9 +22,9 @@ Latest test (1000 games vs Smallbrain):
 - Leading/Trailing (120,-50,3) **( 51,9% | +13,0 Elo)**
 - After black tuning: **54.25% (+29.6 Elo)**
 
-  ## The Asymmetry Journey: From Color to State
+## The Asymmetry Journey: From Color to State
 
-When BADUCK started, the dream was a fully asymmetric engine: white pieces
+When **BADUCK** started, the dream was a fully asymmetric engine: white pieces
 always attacking, black pieces always defending – each side with its own
 tuned parameters for search and evaluation. 
 
@@ -61,10 +61,10 @@ This insight led to the **Leading/Trailing state machine**.
 All development and testing is done on a **4‑thread processor with no
 dedicated GPU**. A single grid of 10,000 games can take a full day.
 Progress is slow, but every commit is validated with direct matches
-(1,000+ games) before it lands. If you enjoy the project and want to
+(1,000+ games) before it lands. **If you enjoy the project and want to
 help me afford cloud computing or a better machine, consider a donation
 (Buy Me a Coffee). Your support means faster
-iteration and bolder experiments.
+iteration and bolder experiments.**
 
 ## Compilation
 ```bash
