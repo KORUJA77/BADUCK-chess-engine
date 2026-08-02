@@ -61,10 +61,10 @@ This insight led to the **Leading/Trailing state machine**.
 All development and testing is done on a **4‑thread processor with no
 dedicated GPU**. A single grid of 10,000 games can take a full day.
 Progress is slow, but every commit is validated with direct matches
-(1,000+ games) before it lands. **If you enjoy the project and want to
+(1,000+ games) before it lands. If you enjoy the project and want to
 help me afford cloud computing or a better machine, consider a donation
-(Buy Me a Coffee). Your support means faster
-iteration and bolder experiments.**
+**(Buy Me a Coffee)**. Your support means faster
+iteration and bolder experiments.
 
 ## Compilation
 ```bash
