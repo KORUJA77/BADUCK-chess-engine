@@ -2,7 +2,8 @@
 
 UCI chess engine derived from Smallbrain, focused on performance and asymmetric tuning.
 
-<img width="540" height="278" alt="image" src="https://github.com/user-attachments/assets/821352a2-90d4-4905-826f-0ad5278437a0" />
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/464f3f4f-72fa-4461-8c08-a0be24886221" />
+
 
 ## Philosophy / Motivation
 
