@@ -50,7 +50,7 @@ This insight led to the **Leading/Trailing state machine**.
 
 ### Results so far
 - The Leading/Trailing system alone brought **+13 Elo** against the
-  Smallbrain baseline (400 games).
+  Smallbrain baseline (1000 games).
 - Expanding the state machine to LMR and razor margins showed a further
   small improvement (51.5% vs the original LT version in direct match).
 - We are currently tuning the leading and trailing values for LMR and
@@ -63,7 +63,7 @@ dedicated GPU**. A single grid of 10,000 games can take a full day.
 Progress is slow, but every commit is validated with direct matches
 (1,000+ games) before it lands. If you enjoy the project and want to
 help me afford cloud computing or a better machine, consider a donation
-(Buy Me a Coffee, GitHub Sponsors). Your support means faster
+(Buy Me a Coffee). Your support means faster
 iteration and bolder experiments.
 
 ## Compilation
